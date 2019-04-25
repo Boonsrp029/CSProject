@@ -7,11 +7,14 @@ bg = pygame.image.load('Picture/bg.png')
 bg = pygame.transform.scale(bg, (1280, 720))
 bg = bg.convert()
 clock = pygame.time.Clock()
-icon_game = pygame.image.load('Picture/logo.jpg')
-icon_game = pygame.transform.scale(icon_game,(100,100))
+credit_bg = pygame.image.load('Picture/credit_bg.png')
+credit_bg = pygame.transform.scale(credit_bg,(1280,720))
+win = pygame.image.load('Picture/win_bg.png')
+win = pygame.transform.scale(win,(1280,720))
 #SOUND
 menu_sound = False
 play_sound = False
+win_sound = False
 #BUTTON
 start = pygame.image.load('Picture/Button/start.png')
 start = pygame.transform.scale(start,(200,100))
@@ -21,23 +24,31 @@ exit_n = pygame.image.load('Picture/Button/exit.png')
 exit_n = pygame.transform.scale(exit_n,(200,100))
 exit_click = pygame.image.load('Picture/Button/exit_click.png')
 exit_click = pygame.transform.scale(exit_click,(200,100))
+credit = pygame.image.load('Picture/Button/credit.png')
+credit = pygame.transform.scale(credit,(200,100))
+credit_click = pygame.image.load('Picture/Button/credit_click.png')
+credit_click = pygame.transform.scale(credit_click,(200,100))
 #GAME_PIC
-pic1 = ['sun.jpg','egg.jpg','butter.jpg','sun.jpg','rain.jpg','pan.jpg','ear.png',
+'''pic1 = ['sun.jpg','egg.jpg','butter.jpg','sun.jpg','rain.jpg','pan.jpg','ear.png',
         'snow.jpg','cat.jpg','wall.jpg','book.png','cheese.jpg','bird.jpg','skate.jpg',
         'jelly.jpg','basket.jpg','wheel.jpg','lady.jpg','hand.jpg','rain.jpg','pill.jpg',
         'home.jpg','down.jpg','sun.jpg','arm.jpg','light.jpg','tea.jpg','scare.jpg',
         'cork.jpg','book.png','tooth.png','water.jpg','road.jpg','pig.png','dragon.png',
         'grape.jpg','lip.jpg','air.jpg','dish.jpg','cup.jpg','hand.jpg','star.png',
         'cow.jpg','sheet.jpg','back.jpg','honey.jpg','bag.jpg','hose.jpg','pop.jpg',
-        'drum.jpg']
-pic2 = ['flower.jpg','plant.png','fly.jpg','set.png','coat.jpg','cake.jpg','ring.png','man.jpg',
+        'drum.jpg']'''
+pic1 = ['sun.jpg','egg.jpg','butter.jpg']
+'''pic2 = ['flower.jpg','plant.png','fly.jpg','set.png','coat.jpg','cake.jpg','ring.png','man.jpg',
         'fish.jpg','paper.jpg','shelf.jpg','cake.jpg','bath.jpg','board.jpg','fish.jpg',
         'ball.jpg','chair.jpg','bug.jpg','ball.jpg','bow.jpg','box.jpg','work.jpg',
         'stairs.jpg','glasses.jpg','chair.jpg','house.jpg','pot.jpg','crow.jpg','screw.jpg',
         'worm.png','brush.jpg','melon.jpg','runner.jpg','tail.png','fly.jpg','fruit.jpg',
         'stick.jpg','port.jpg','washer.png','cake.jpg','shake.jpg','fish.jpg','boy.jpg',
-        'cloth.jpg','stroke.jpg','moon.jpg','pipe.jpg','pipe.jpg','corn.jpg','stick.jpg']
-plus = pygame.image.load('Picture/plus.jpg')
+        'cloth.jpg','stroke.jpg','moon.jpg','pipe.jpg','pipe.jpg','corn.jpg','stick.jpg']'''
+pic2 = ['flower.jpg','plant.png','fly.jpg']
+plus = pygame.image.load('Picture/plus.png')
+equal = pygame.image.load('Picture/equal.png')
+question = pygame.image.load('Picture/question.png')
 bg_game = pygame.image.load('Picture/bg_game.png')
 bg_game = pygame.transform.scale(bg_game,(1280,720))
 #ANSWER#
@@ -74,7 +85,7 @@ def game():
     global play_sound
     if not play_sound:
         play_sound = pygame.mixer.Sound('Sound/Chibi Ninja.wav')
-        play_sound.set_volume(.2)
+        play_sound.set_volume(.3)
         play_sound.play(loops=-1)
     #GAME
     while True:
@@ -84,10 +95,15 @@ def game():
             screen.blit(bg_game,(0,0))
             picture1 = pygame.image.load('Picture/pics1/'+pic1[i])
             picture2 = pygame.image.load('Picture/pics2/'+pic2[i])
-            picture1 = pygame.transform.scale(picture1,(200,200))
-            picture2 = pygame.transform.scale(picture2,(200,200))
-            screen.blit(picture1,(300,200))
-            screen.blit(picture2,(900,200))
+            picture1 = pygame.transform.scale(picture1,(220,220))
+            picture2 = pygame.transform.scale(picture2,(220,220))
+            screen.blit(picture1,(230,200))
+            screen.blit(picture2,(600,200))
+            screen.blit(plus,(330,200))
+            screen.blit(equal,(720,200))
+            screen.blit(question,(850,200))
+            if i == len(answer)-1 and input_ == answer[i]:
+                winner()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -107,7 +123,7 @@ def game():
                                 a = int(a) - 97
                                 show_input += set_letter[a]
                                 correct_sound = pygame.mixer.Sound('Sound/correct.wav')
-                                correct_sound.set_volume(.5)
+                                correct_sound.set_volume(.2)
                                 correct_sound.play()
                                 show_input = ''
                         input_ = ''
@@ -129,7 +145,7 @@ def game():
                     a = int(a) - 97
                     show_input += set_letter[a]
             #SHOW_INPUT
-            show_text(show_input,30,(640,600),(248,248,255),'fonts//FIPPS___.ttf')
+            show_text(show_input,70,(640,550),(255, 255, 255),'fonts//Nawabiat.ttf')
             show_input = ''
             pygame.display.update()
             clock.tick(30)
@@ -156,11 +172,60 @@ def button(icon,icon_click,x,y,w,h,order=None,p=None):
             if order == 'start':
                 pygame.display.update()
                 game()
+            if order == 'credit':
+                credit_background()
     else:
         if p:
             screen.blit(icon,(x,y))
         else:
             screen.blit(icon,(x,y))
+
+def credit_background():
+    slide = 40
+    click = pygame.mouse.get_pressed()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    menu()
+            if slide < 255:
+                slide += 10
+                credit_bg.set_alpha(slide)
+                screen.blit(credit_bg,(0,0))
+                pygame.time.delay(10)
+            screen.blit(credit_bg,(0,0))
+            pygame.display.update()
+            clock.tick(30)
+
+def winner():
+    slide = 40
+    play_sound.stop()
+    global win_sound,menu_sound
+    if not win_sound:
+        win_sound = pygame.mixer.Sound('Sound/MHW behemoth.wav')
+        win_sound.set_volume(.6)
+        win_sound.play(loops = -1)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    win_sound.stop()
+                    menu_sound = False
+                    menu()
+        if slide < 255:
+            slide += 10
+            win.set_alpha(slide)
+            screen.blit(win,(0,0))
+            pygame.time.delay(100)
+        screen.blit(win,(0,0))
+        pygame.display.update()
+        clock.tick(30)
 
 def menu():
     global menu_sound,play_sound
@@ -177,11 +242,12 @@ def menu():
         if slide < 255:
             slide += 10
             bg.set_alpha(slide)
-            screen.blit(bg, (0, 0))
-            pygame.time.delay(100)
+            screen.blit(bg, (0,0))
+            pygame.time.delay(70)
         screen.blit(bg,(0,0))
-        button(exit_n,exit_click,80,360,100,100,'exit')
+        button(exit_n,exit_click,80,460,100,100,'exit')
         button(start,start_click,80,250,100,100,'start')
+        button(credit,credit_click,80,360,100,100,'credit')
         pygame.display.update()
         clock.tick(30)
 pygame.init()
